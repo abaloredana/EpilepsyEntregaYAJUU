@@ -3,6 +3,7 @@ package BITalino;
 
 import static Client.GUI.getChannels;
 import static Client.GUI.getMacAddress;
+import java.util.ArrayList;
 import java.util.Vector;
 
 import javax.bluetooth.RemoteDevice;
@@ -14,9 +15,19 @@ import java.util.logging.Logger;
 public class BitalinoDemo {
 
     public static Frame[] frame;
+    public static ArrayList<Integer> list1 = new ArrayList<Integer>();
+    public static ArrayList<Integer> list2 = new ArrayList<Integer>();
+    public int i = 3;
 
+    public int getI() {
+        return i;
+    }
+
+    
     public static void main(String[] args) {
-
+       
+        
+        
         BITalino bitalino = null;
         try {
             bitalino = new BITalino();
@@ -57,9 +68,13 @@ public class BitalinoDemo {
                     //  + frame[i].analog[4] + " "
                     //  + frame[i].analog[5]
                     );
-
+                    list1.add(frame[i].analog[0]);
+                    list2.add(frame[i].analog[1]);
                 }
+                
             }
+            setList1(list1);
+            setList2(list2);
             //stop acquisition
             bitalino.stop();
         } catch (BITalinoException ex) {
@@ -76,7 +91,25 @@ public class BitalinoDemo {
                 Logger.getLogger(BitalinoDemo.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-
+        
     }
 
+    public static ArrayList<Integer> getList1() {
+        return list1;
+    }
+
+    public static void setList1(ArrayList<Integer> list1) {
+        BitalinoDemo.list1 = list1;
+    }
+
+    public static ArrayList<Integer> getList2() {
+        return list2;
+    }
+
+    public static void setList2(ArrayList<Integer> list2) {
+        BitalinoDemo.list2 = list2;
+    }
+
+    
+    
 }

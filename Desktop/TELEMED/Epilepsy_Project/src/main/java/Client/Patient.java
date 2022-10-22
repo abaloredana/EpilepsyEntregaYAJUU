@@ -5,6 +5,7 @@
  */
 package Client;
 
+import BITalino.BitalinoDemo.*;
 import java.util.*;
 
 /**
@@ -22,6 +23,8 @@ public class Patient {
     private Date dob;
     private String username;
     private String password;
+    private ArrayList<Integer> signal1 = new ArrayList<Integer>();
+    private ArrayList<Integer> signal2 = new ArrayList<Integer>();
 
     public Patient(String name, String lastname, Integer id, String gender, String address, String telephone, Date dob, String username, String password) {
         this.name = name;
@@ -106,7 +109,4 @@ public class Patient {
     public void setPassword(String password) {
         this.password = password;
     }
-    
-    
-    
 }
