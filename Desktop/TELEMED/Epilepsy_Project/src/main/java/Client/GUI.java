@@ -23,12 +23,12 @@ public class GUI {
         return macAddress;
     }
     public static int[] getChannels() throws IOException{
-        int[] channels = null;
+        int[] channels = new int[2];
         int channel1, channel2;
         bufferReader = new BufferedReader(new InputStreamReader(System.in));
-        channel1 = new Integer(bufferReader.readLine());
+        channel1 = Integer.parseInt(bufferReader.readLine());
         bufferReader = new BufferedReader(new InputStreamReader(System.in));
-        channel2 = new Integer(bufferReader.readLine());      
+        channel2 = Integer.parseInt(bufferReader.readLine());      
         channels[0] = channel1;
         channels[1] = channel2;
         return channels;
