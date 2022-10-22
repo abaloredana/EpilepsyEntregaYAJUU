@@ -5,13 +5,32 @@
 
 package Client;
 
+import java.io.*;
+
 /**
  *
  * @author loredanaabalo
  */
 public class GUI {
-
-    public static void main(String[] args) {
-        System.out.println("Hello World!");
+    private static BufferedReader bufferReader;
+    public static void main(String[] args) throws IOException {
+        
+    }
+    public static String getMacAddress() throws IOException{
+        String macAddress;
+        bufferReader = new BufferedReader(new InputStreamReader(System.in));
+        macAddress = bufferReader.readLine();
+        return macAddress;
+    }
+    public static int[] getChannels() throws IOException{
+        int[] channels = null;
+        int channel1, channel2;
+        bufferReader = new BufferedReader(new InputStreamReader(System.in));
+        channel1 = new Integer(bufferReader.readLine());
+        bufferReader = new BufferedReader(new InputStreamReader(System.in));
+        channel2 = new Integer(bufferReader.readLine());      
+        channels[0] = channel1;
+        channels[1] = channel2;
+        return channels;
     }
 }

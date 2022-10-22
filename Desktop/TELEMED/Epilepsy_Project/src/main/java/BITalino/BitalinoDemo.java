@@ -1,6 +1,8 @@
 package BITalino;
 
 
+import static Client.GUI.getChannels;
+import static Client.GUI.getMacAddress;
 import java.util.Vector;
 
 import javax.bluetooth.RemoteDevice;
@@ -25,7 +27,7 @@ public class BitalinoDemo {
 
             //You need TO CHANGE THE MAC ADDRESS
             //You should have the MAC ADDRESS in a sticker in the Bitalino
-            String macAddress = "20:16:02:14:75:76";
+            String macAddress = getMacAddress();
             
             //Sampling rate, should be 10, 100 or 1000
             int SamplingRate = 10;
@@ -33,7 +35,7 @@ public class BitalinoDemo {
 
             // Start acquisition on analog channels A2 and A6
             // For example, If you want A1, A3 and A4 you should use {0,2,3}
-            int[] channelsToAcquire = {1, 5};
+            int[] channelsToAcquire = getChannels();
             bitalino.start(channelsToAcquire);
 
             //Read in total 10000000 times
