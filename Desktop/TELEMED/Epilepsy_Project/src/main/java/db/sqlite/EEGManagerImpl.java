@@ -13,7 +13,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import jdk.internal.net.http.common.Log;
 
 /**
  *
@@ -21,10 +20,9 @@ import jdk.internal.net.http.common.Log;
  */
 public class EEGManagerImpl implements EEGManager {
 
-    private Connection c;
+    private final Connection c;
     String sql;
     PreparedStatement p;
-    ResultSet result;
 
     public EEGManagerImpl(Connection c) {
         this.c = c;
@@ -32,7 +30,7 @@ public class EEGManagerImpl implements EEGManager {
 
     @Override
     public ArrayList<EEGSample> getEEGs(int id) {
-        ArrayList<EEGSample> newSamples = new ArrayList<EEGSample>();
+        ArrayList<EEGSample> newSamples = new ArrayList<>();
         ArrayList<Integer> eeg1;
         ArrayList<Integer> elg1;
         EEGSample newSample;
@@ -82,17 +80,17 @@ public class EEGManagerImpl implements EEGManager {
         String replace1 = replace.replace("]", "");
         String replace2 = replace1.replace(" ", "");
         ArrayList<String> myList = new ArrayList<>(Arrays.asList(replace2.split(",")));
-        ArrayList<Integer> result = new ArrayList<>();
+        ArrayList<Integer> result1 = new ArrayList<>();
         for (String stringValue : myList) {
             try {
                 //Convert String to Integer, and store it into integer array list.
-                result.add(Integer.parseInt(stringValue));
+                result1.add(Integer.parseInt(stringValue));
             } catch (NumberFormatException nfe) {
                 System.out.println("Could not parse " + nfe);
             }
         }
 
-        return result;
+        return result1;
     }
 
 }

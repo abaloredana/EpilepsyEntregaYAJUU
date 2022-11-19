@@ -18,19 +18,9 @@ public class GUI {
     }
     public static String getMacAddress() throws IOException{
         String macAddress;
+        //System.out.print("MAC:");
         bufferReader = new BufferedReader(new InputStreamReader(System.in));
         macAddress = bufferReader.readLine();
         return macAddress;
-    }
-    public static int[] getChannels() throws IOException{
-        int[] channels = new int[2];
-        int channel1, channel2;
-        bufferReader = new BufferedReader(new InputStreamReader(System.in));
-        channel1 = Integer.parseInt(bufferReader.readLine());
-        bufferReader = new BufferedReader(new InputStreamReader(System.in));
-        channel2 = Integer.parseInt(bufferReader.readLine());      
-        channels[0] = channel1;
-        channels[1] = channel2;
-        return channels;
     }
 }

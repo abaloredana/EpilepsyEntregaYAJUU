@@ -5,7 +5,16 @@
 package GUI;
 
 import Client.Patient;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import ui.menu;
 
 /**
  *
@@ -13,8 +22,25 @@ import javax.swing.JOptionPane;
  */
 public class SignUp extends javax.swing.JFrame {
 
+    private static OutputStream outputStream = null;
+    private static InputStream inputStream = null;
+    private static ObjectOutputStream objectOutputStream = null;
+    private static ObjectInputStream objectInputStream = null;
+    private static Socket socket = null;
+    public ClientMenu menu = new ClientMenu();
+
+    private int option;
+
+    public int getOption() {
+        return option;
+    }
+
+    public void setOption(int option) {
+        this.option = option;
+    }
+
     Patient patient = new Patient(null, null, null, null, null, null, null, null, null);
-    
+
     /**
      * Creates new form U_Interface
      */
@@ -56,7 +82,7 @@ public class SignUp extends javax.swing.JFrame {
         saveNewInfoButton = new javax.swing.JButton();
         jLabel10 = new javax.swing.JLabel();
         goBack = new javax.swing.JButton();
-        jTextField1 = new javax.swing.JTextField();
+        MACtxt = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -247,7 +273,7 @@ public class SignUp extends javax.swing.JFrame {
                 .addGap(90, 90, 90)
                 .addComponent(jLabel10)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(MACtxt, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(211, 211, 211)
@@ -266,7 +292,7 @@ public class SignUp extends javax.swing.JFrame {
                             .addComponent(usernametxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel6)
                             .addComponent(jLabel10)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(MACtxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(passwordfield, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -316,25 +342,26 @@ public class SignUp extends javax.swing.JFrame {
     }//GEN-LAST:event_passwordfieldActionPerformed
 
     private void saveNewInfoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveNewInfoButtonActionPerformed
-       
-       
+        this.option = 1;
         patient.setName(nametxt.getText());
         System.out.println("Name: " + patient.getName());
         patient.setLastname(lastnametxt.getText());
         System.out.println("Lastname: " + patient.getLastname());
-        patient.setPhone(phonetxt.getText()); 
+        patient.setPhone(phonetxt.getText());
         System.out.println("Phone: " + patient.getPhone());
-        patient.setEmail(emailtxt.getText()); 
+        patient.setEmail(emailtxt.getText());
         System.out.println("Address: " + patient.getEmail());
-
+        patient.setMAC(MACtxt.getText());
+        System.out.println("MAC:" + patient.getMAC());
         if (malecheck.isSelected()) {
-            patient.setGender("Male"); 
+            patient.setGender("M");
         }
         if (femalecheck.isSelected()) {
-            patient.setGender("Female"); 
+            patient.setGender("F");
         }
         System.out.println("Gender:" + patient.getGender());
         String dob = dobtxt.getText();
+        patient.setDob(dob);
         //java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy");
         //java.time.LocalDate textFieldAsDate = java.time.LocalDate.parse(dob, formatter);
         //patient.setDob(textFieldAsDate);
@@ -344,12 +371,30 @@ public class SignUp extends javax.swing.JFrame {
         System.out.println("Username:" + patient.getUsername());
         String pwd = new String(passwordfield.getPassword());
         patient.setPassword(pwd);
-    
-        if(patient.getGender() != null){JOptionPane.showMessageDialog(null, "Signup was successful");}
+
+        if (patient.getGender() != null) {
+            JOptionPane.showMessageDialog(null, "Signup was successful");
+        }
+
+        connectToServer();
+
+        try {
+            outputStream.write(option);
+            objectOutputStream.writeObject(patient);
+            Patient patient1 = (Patient) (objectInputStream.readObject());
+            menu.setPatient(patient1);
+        } catch (IOException ex) {
+            System.out.println("Unable to write the objects on the server.");
+            Logger.getLogger(menu.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(SignUp.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        menu.setVisible(true);
     }//GEN-LAST:event_saveNewInfoButtonActionPerformed
 
-    public Patient getNewUser(Patient patient){
-    return patient;
+    public Patient getNewUser(Patient patient) {
+        return patient;
     }
     private void nametxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nametxtActionPerformed
 
@@ -412,7 +457,22 @@ public class SignUp extends javax.swing.JFrame {
         });
     }
 
+    private static void connectToServer() {
+        try {
+            socket = new Socket("localhost", 9000);
+            outputStream = socket.getOutputStream();
+            objectOutputStream = new ObjectOutputStream(outputStream);
+            inputStream = socket.getInputStream();
+            objectInputStream = new ObjectInputStream(inputStream);
+        } catch (IOException ex) {
+            System.out.println("It was not possible to connect to the server.");
+            System.exit(-1);
+            Logger.getLogger(menu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField MACtxt;
     private javax.swing.JTextField dobtxt;
     private javax.swing.JTextField emailtxt;
     private javax.swing.JCheckBox femalecheck;
@@ -430,7 +490,6 @@ public class SignUp extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField lastnametxt;
     private javax.swing.JCheckBox malecheck;
     private javax.swing.JTextField nametxt;

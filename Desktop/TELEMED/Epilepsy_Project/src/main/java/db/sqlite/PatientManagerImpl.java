@@ -18,7 +18,7 @@ import java.sql.SQLException;
  */
 public class PatientManagerImpl implements PatientManager {
 
-    private Connection c;
+    private final Connection c;
     String sql;
     PreparedStatement p;
     ResultSet result;

@@ -4,12 +4,31 @@
  */
 package GUI;
 
+import Client.Patient;
+
 /**
  *
  * @author loredanaabalo
  */
 public class ClientMenu extends javax.swing.JFrame {
 
+    
+    Patient patient;
+
+    public ClientMenu(Patient patient) {
+        this.patient = patient;
+    }
+
+    public void setPatient(Patient patient) {
+        this.patient = patient;
+    }
+
+    public Patient getPatient() {
+        return patient;
+    }
+    
+    
+    
     /**
      * Creates new form ClientMenu
      */

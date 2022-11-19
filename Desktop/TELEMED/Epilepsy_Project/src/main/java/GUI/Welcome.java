@@ -4,11 +4,26 @@
  */
 package GUI;
 
+import javax.swing.JButton;
+
 /**
  *
  * @author loredanaabalo
  */
 public class Welcome extends javax.swing.JFrame {
+
+    public JButton getLoginbutton() {
+        return loginbutton;
+    }
+
+    public JButton getSignUpButton() {
+        return signUpButton;
+    }
+    
+    
+    public int option = 0;
+    public Login log = new Login();
+    public SignUp sup = new SignUp();
 
     /**
      * Creates new form Server_Interface
@@ -118,17 +133,16 @@ public class Welcome extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void loginbuttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginbuttonActionPerformed
-       Login log = new Login();
-       log.setVisible(true);
-        
+
+        log.setVisible(true);
+
 // TODO add your handling code here:
-        
+
     }//GEN-LAST:event_loginbuttonActionPerformed
 
     private void signUpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signUpButtonActionPerformed
-       SignUp sup = new SignUp();
-       sup.setVisible(true);
-        
+
+        sup.setVisible(true);
         // TODO add your handling code here:
     }//GEN-LAST:event_signUpButtonActionPerformed
 
@@ -164,7 +178,7 @@ public class Welcome extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new Welcome().setVisible(true);
-                
+
             }
         });
     }
