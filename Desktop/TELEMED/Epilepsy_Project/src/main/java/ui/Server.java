@@ -29,25 +29,13 @@ import java.util.logging.Logger;
 public class Server {
 
     private static DBManager dbManager;
-    private static PatientManager patientManager;
-    private static EEGManager EEGManager;
-    private static InputStream inputStream = null;
-    private static OutputStream outputStream = null;
-    private static ObjectInputStream objectInputStream = null;
-    private static ObjectOutputStream objectOutputStream = null;
     private static Socket socket;
     private static ServerSocket serverSocket;
-    private static Patient patient;
-    private static EEGSample eegSample;
-    private static ArrayList<EEGSample> eegs;
 
     public static void main(String[] args) throws Exception {
 
         dbManager = new DBManagerImpl();
         dbManager.connect();
-        patientManager = dbManager.getPatient();
-        EEGManager = dbManager.getEEGSample();
-
         dbManager.createTables();
 
         serverSocket = new ServerSocket(9000);
@@ -56,64 +44,15 @@ public class Server {
             while (true) {
                 socket = serverSocket.accept();
                 System.out.println("Connection client created");
-
-                try {
-                    inputStream = socket.getInputStream();
-                    System.out.println("Connection from the direction " + socket.getInetAddress());
-                } catch (IOException ex) {
-                    System.out.println("It was not possible to start the server. Fatal error.");
-                    Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-                    System.exit(-1);
-                }
-
-                objectInputStream = new ObjectInputStream(inputStream);
-                outputStream = socket.getOutputStream();
-                objectOutputStream = new ObjectOutputStream(outputStream);
-
-                int op = inputStream.read();
-
-                if (op == 1) {
-                    newUserS();
-                } else {
-                    oldUserS();
-                }
-
-                op = inputStream.read();
-
-                switch (op) {
-                    case 1:
-                        ReceiveSample();
-                        break;
-                    case 2:
-                        sendSamples();
-                        break;
-                    default:
-                        break;
-                }
-
+                new Thread(new ServerThreads(socket,dbManager)).start();
             }
         } finally {
-            releaseResources(objectInputStream, objectOutputStream, socket, serverSocket);
+            releaseResources(serverSocket);
         }
 
     }
 
-    private static void releaseResources(ObjectInputStream objectInputStream, ObjectOutputStream objectOutputStream, Socket socket, ServerSocket serverSocket) {
-        try {
-            objectInputStream.close();
-        } catch (IOException ex) {
-            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
-            objectOutputStream.close();
-        } catch (IOException ex) {
-            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
-            socket.close();
-        } catch (IOException ex) {
-            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    private static void releaseResources(ServerSocket serverSocket) {
         try {
             serverSocket.close();
         } catch (IOException ex) {
@@ -121,61 +60,4 @@ public class Server {
         }
     }
 
-    private static void newUserS() {
-        try {
-            patient = (Patient) (objectInputStream.readObject());
-            patientManager.newPatient(patient);
-            patient = patientManager.getPatient(patient.getUsername(), patient.getPassword());
-            objectOutputStream.writeObject(patient);
-        } catch (EOFException ex) {
-            System.out.println("All data have been correctly read.");
-        } catch (IOException | ClassNotFoundException ex) {
-            System.out.println("Unable to read from the client.");
-            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    private static void oldUserS() {
-        try {
-            patient = (Patient) (objectInputStream.readObject());
-            patient = patientManager.getPatient(patient.getUsername(), patient.getPassword());
-            objectOutputStream.writeObject(patient);
-        } catch (EOFException ex) {
-            System.out.println("All data have been correctly read.");
-        } catch (IOException | ClassNotFoundException ex) {
-            System.out.println("Unable to read from the client.");
-            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    private static void ReceiveSample() {
-
-        try {
-            eegSample = (EEGSample) (objectInputStream.readObject());
-            System.out.println(eegSample.getEeg().getClass());
-            EEGManager.newEEGSample(eegSample);
-        } catch (EOFException ex) {
-            System.out.println("All data have been correctly read.");
-        } catch (IOException | ClassNotFoundException ex) {
-            System.out.println("Unable to read from the client.");
-            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    private static void sendSamples() {
-        try {
-            int patient_id = inputStream.read();
-            eegs = EEGManager.getEEGs(patient_id);
-            outputStream.write(eegs.size());
-            for (int i = 0; i < eegs.size(); i++) {
-                objectOutputStream.writeObject(eegs.get(i));
-            }
-
-        } catch (EOFException ex) {
-            System.out.println("All data have been correctly read.");
-        } catch (IOException ex) {
-            System.out.println("Unable to read from the client.");
-            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
 }
