@@ -6,38 +6,63 @@
 package Client;
 
 import BITalino.BitalinoDemo.*;
+import java.io.Serializable;
 import java.util.*;
 
 /**
  *
  * @author Usuario
  */
-public class Patient {
+public class Patient implements Serializable {
+    
+    private static final long serialVersionUID = -6291904286218553733L;
     
     private String name;
     private String lastname;
     private Integer id;
     private String gender;
-    private String address;
-    private String telephone;
-    private Date dob;
+    private String email;
+    private String phone;
+    private String dob;
     private String username;
     private String password;
-    private ArrayList<Integer> signal1 = new ArrayList<Integer>();
-    private ArrayList<Integer> signal2 = new ArrayList<Integer>();
+    private String MAC;
 
-    public Patient(String name, String lastname, Integer id, String gender, String address, String telephone, Date dob, String username, String password) {
+    public Patient(Integer id, String name, String lastname,String gender, String email, String phone, String dob, String username, String password, String MAC) {
         this.name = name;
         this.lastname = lastname;
         this.id = id;
         this.gender = gender;
-        this.address = address;
-        this.telephone = telephone;
+        this.email = email;
+        this.phone = phone;
         this.dob = dob;
         this.username = username;
         this.password = password;
+        this.MAC = MAC;
+    }
+    
+    
+    
+    
+    public Patient(String name, String lastname, String gender, String email, String phone, String dob, String username, String password, String MAC) {
+        this.name = name;
+        this.lastname = lastname;
+        this.gender = gender;
+        this.email = email;
+        this.phone = phone;
+        this.dob = dob;
+        this.username = username;
+        this.password = password;
+        this.MAC = MAC;
     }
 
+    public Patient(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+    
+    
+    
     public String getName() {
         return name;
     }
@@ -70,27 +95,23 @@ public class Patient {
         this.gender = gender;
     }
 
-    public String getAddress() {
-        return address;
+    public String getEmail() {
+        return email;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setEmail(String address) {
+        this.email = address;
     }
 
-    public String getTelephone() {
-        return telephone;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setTelephone(String telephone) {
-        this.telephone = telephone;
-    }
-
-    public Date getDob() {
+    public String getDob() {
         return dob;
     }
 
-    public void setDob(Date dob) {
+    public void setDob(String dob) {
         this.dob = dob;
     }
 
@@ -109,4 +130,24 @@ public class Patient {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    public String getMAC() {
+        return MAC;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public void setMAC(String MAC) {
+        this.MAC = MAC;
+    }
+
+    @Override
+    public String toString() {
+        return "Patient{" + "name=" + name + ", lastname=" + lastname + ", id=" + id + ", gender=" + gender + ", email=" + email + ", phone=" + phone + ", dob=" + dob + ", username=" + username + ", password=" + password + ", MAC=" + MAC + '}';
+    }
+    
+    
+    
 }
