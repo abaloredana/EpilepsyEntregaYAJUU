@@ -7,8 +7,6 @@ package ui;
 import BITalino.BitalinoDemo;
 import Client.EEGSample;
 import Client.Patient;
-import db.interfaces.*;
-import db.sqlite.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,7 +16,6 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -46,15 +43,18 @@ public class menu {
     private static ObjectInputStream objectInputStream = null;
     private static Socket socket = null;
     private static BufferedReader bufferedReader;
+    public static boolean v1= true;
 
     public static void main(String[] args) throws Exception {
 
         reader = new BufferedReader(new InputStreamReader(System.in));
 
         System.out.print("\nHello.\n\nYou are accesing your Bitalino device for Epilepsy monitoring.\n\n");
-        System.out.print("If you are a new user press 1\n");
-        System.out.print("If you are an existing user press 2:");
+        System.out.println("What do you want to do?");
+        System.out.print("1: Sign in\n");
+        System.out.print("2: Log in");
         option = Integer.parseInt(reader.readLine());
+        
         System.out.print("Username:");
         username = reader.readLine();
         System.out.print("Password:");
@@ -77,11 +77,13 @@ public class menu {
         patient_id = patient.getId();
         MAC = patient.getMAC();
 
+        
         System.out.print("\nIf you want to record reading press 1\n");
         System.out.print("If you want to view past readings press 2\n");
         System.out.print("If you want to exit press 3:");
         option = Integer.parseInt(reader.readLine());
         outputStream.write(option);
+        
         switch (option) {
             case 1:
                 recordEEG();
